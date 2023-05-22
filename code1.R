@@ -8,13 +8,13 @@ library(shiny)
 library(maps)
 
 
-##the user interface 
+##the user interface
 
 ui <- fluidPage(
   titlePanel("Find and Rate a Bookstore"),
   theme = shinytheme("cerulean"),
   leafletOutput("map_netherlands")
-  
+
 )
 
 
@@ -32,5 +32,7 @@ server <- function(input, output) {
 ##run the app
 shinyApp(ui, server)
 
+
+#comment
 
 
