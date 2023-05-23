@@ -1,11 +1,21 @@
 install.packages("shiny")
 install.packages("leaflet")
 install.packages("maps")
+#install.packages("Rtools")
+install.packages("rlang")
+install.packages("shinytest")
+install.packages("testthat")
+install.packages("usethis")
 
 
 library(leaflet) #for making the interactive map
 library(shiny)
 library(maps)
+library(rlang)
+library(usethis)
+library(devtools)
+library(testthat)
+library(shinytest)
 
 
 ##the user interface
@@ -31,6 +41,20 @@ ui <- fluidPage(
 
 ##the server
 #fist I want there to be a map of the Netherlands when the app opens
+
+
+#' create a Map
+#'
+#' @param input latitude and longitude of the location
+#' @param output map zoomed into the location
+#'
+#' @return the map
+#' @export
+#'
+#' @examples
+#' if you pot in latitude: 52.37 and longitude: 4.89 then it will zoom into Amsterdam
+
+
 server <- function(input, output) {
   output$map_netherlands <- renderLeaflet({
     leaflet() %>%
@@ -52,11 +76,16 @@ server <- function(input, output) {
   })
 }
 
-
 ##run the app
 shinyApp(ui= ui, server= server)
 
 
-#comment
+
+usethis::use_testthat()
+
+
+
+
+
 
 
