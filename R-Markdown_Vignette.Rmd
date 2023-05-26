@@ -1,0 +1,54 @@
+---
+title: "Find and Rate Bookstore"
+output: html_document
+date: "2023-05-26"
+---
+TITLE:
+**Find and Rate Bookstore**
+
+this app will allow you to find your nearest bookstores using your location in longitude and latitude
+
+In order to use this shiny app you need to download and install the package FindandRateBookstore
+
+````{r}
+#here I will add the code of installing, library and then run the package/app
+````
+
+UI
+```{r}
+#this will be the code of the ui of the app
+````
+
+
+
+SERVER  
+I think i will split this up into the different main things that the app does
+````{r}
+#this will be the code of the server of the app
+````
+
+
+This is how I generated the list of bookstores
+
+````{r}
+#how i made the list of bookstores
+````
+
+
+
+# How to use the App:  
+- step   
+  - by   
+- step   
+- on   
+- how  
+  - to   
+- use   
+- the   
+- app  
+  
+
+
+
+
+

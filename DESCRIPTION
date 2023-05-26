@@ -1,3 +1,4 @@
+
 Package: FindandRateBookstore
 Type: Package
 Title: FindandRateBookstore
@@ -8,3 +9,27 @@ Description: A shiny app in R that is a map which allows people to find bookstor
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
+Package: FindandRateBookstore
+Type: Package
+Title: FindandRateBookstore
+Version: 0.1.0
+Author: Rebekka Cebulla
+Maintainer: Rebekka Cebulla <rebekka.cebulla@student.uva.nl>
+Description: A shiny app in R that is a map which allows people to find bookstores close to them. I want to add functions for people to leave comments for their friends about their experience there.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Imports:
+  shiny,
+  leaflet,
+  maps,
+  rlang,
+  usethis,
+  devtools,
+  testthat,
+  shinytest,
+  shinyWidgets
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+
