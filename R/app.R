@@ -47,7 +47,7 @@ ui <- fluidPage(
   titlePanel(
     tags$div(
     # Use the img tag to add the image
-      tags$img(src = system.file("R/images/Picture5.gif", package = "FindandRateBookstore"),
+      tags$img(src = system.file("www\Picture4.jpg", package = "FindandRateBookstore"),
                height = "150px", width = "150px"),
     # Add a space between the image and text
     tags$span(style = "margin-left: 20px;"),
@@ -117,6 +117,21 @@ server <- function(input, output) {
     }
 
   })
+
+  # Add points on the map
+  observeEvent(input$addPoint, {
+    lat <- as.numeric(52.36895$newLatitude)
+    lng <- as.numeric(4.889547$newLongitude)
+
+    if (!is.na(lat) && !is.na(lng)) {
+      leafletProxy("map_netherlands") %>%
+        addMarkers(lng = lng, lat = lat, label = "The American Book Center",  icon = leaflet::icon("star", color = "blue", size = "large"))
+    }
+  })
+
+
+
+
   #add the text for under the map
     output$map_description <- renderText({
       "Add you longitude and latitude to the right and this map will show you your location"
@@ -126,7 +141,9 @@ server <- function(input, output) {
 
 #add documentation to this function
 #this is the function that will run the app
+
+
 startApp <- function(){
 shinyApp(ui= ui, server= server) }
 
-
+list.files("www")
