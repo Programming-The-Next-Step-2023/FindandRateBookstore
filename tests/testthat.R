@@ -13,6 +13,7 @@ devtools::install_github("Programming-The-Next-Step-2023/FindandRateBookstore")
 
 library(testthat)
 library(FindandRateBookstore)
+
 library(shinytest)
 library(shiny)
 library(leaflet)
@@ -42,6 +43,13 @@ test_that("Map zooms in correctly", {
   # Close the Shiny app session
   app$stop()
 })
+
+
+
+test_check("FindandRateBookstore")
+
+
+
 
 
 
