@@ -8,7 +8,7 @@
 # install.packages("usethis")
 #install.packages("shinyWidgets")
 
-install.packages("rmarkdown")
+#install.packages("rmarkdown")
 install.packages("FindandRateBookstore")
 
 library(leaflet) #for making the interactive map
@@ -22,12 +22,6 @@ library(shinytest)
 library(FindandRateBookstore)
 library(shinyWidgets)
 
-#################################################################
-
-#################
-library(leaflet)
-library(shiny)
-
 # UI
 ui <- fluidPage(
   setBackgroundColor(
@@ -35,15 +29,15 @@ ui <- fluidPage(
     gradient = c("linear", "radial"),
     direction = c("bottom", "top", "right", "left"),
     shinydashboard = FALSE
-  ),
+  ), #making the background colour green
 
   titlePanel(
     tags$div(
       #tags$img(system.file("www", "6920933.png", package = "FindandRateBookstore"),
        #        height = "150px", width = "150px"),
       tags$span(style = "margin-left: 20px;"),
-      "Find and Rate a Bookstore"
-    )
+      "Find a Bookstore"
+    ) #adding a title
   ),
   sidebarLayout(
     position = "right",
@@ -64,14 +58,14 @@ ui <- fluidPage(
       actionButton("button_dam_square", "Dam Square"),
       actionButton("button_schiphol_airport", "Schiphol Airport"),
       actionButton("button_centraal_station", "Centraal Station")
-    ),
+    ), #to add the buttons
     mainPanel(
       h1("Map"),
       leafletOutput("map_netherlands"),
       br(),
       textOutput("map_description"),
       br()
-    )
+    )#the app in the main part
   )
 )
 
@@ -86,7 +80,7 @@ server <- function(input, output) {
     shadowUrl = "https://leafletjs.com/examples/custom-icons/leaf-shadow.png",
     shadowWidth = 50, shadowHeight = 64,
     shadowAnchorX = 4, shadowAnchorY = 62
-  )
+  ) #the icon used for the bookstores
 
   redIcon <- makeIcon(
     iconUrl = "https://leafletjs.com/examples/custom-icons/leaf-red.png",
@@ -95,13 +89,13 @@ server <- function(input, output) {
     shadowUrl = "https://leafletjs.com/examples/custom-icons/leaf-shadow.png",
     shadowWidth = 50, shadowHeight = 64,
     shadowAnchorX = 4, shadowAnchorY = 62
-  )
+  ) # the icon used for your own location
 
   output$map_netherlands <- renderLeaflet({
     leaflet() %>%
       addTiles() %>%
       setView(lng = 5.2913, lat = 52.1326, zoom = 7)
-  })
+  }) # the map
 
   markers_df <- read.csv("inst/www/bookstores1234.csv")
 
@@ -112,7 +106,7 @@ server <- function(input, output) {
     lat = c(52.3752, 52.3584, 52.3600, 52.3580, 52.3731, 52.3091, 52.3792),  # Additional latitudes
     name = c("Anne Frank House", "Van Gogh Museum", "Rijksmuseum", "Vondelpark", "Dam Square",
              "Schiphol Airport", "Centraal Station")  # Additional names
-  )
+  ) # the buttons for all the tourist information
 
   observeEvent(input$updateMap, {
     lat <- as.numeric(input$latitude)
@@ -130,7 +124,7 @@ server <- function(input, output) {
                         "Rating: ", markers_df$rating,
                         "Address: ", markers_df$formatted_address),
           icon = greenIcon
-        )
+        ) # adding the markers
     }
   })
 
