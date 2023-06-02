@@ -6,8 +6,8 @@
 # * https://r-pkgs.org/tests.html
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
 
-install.packages("FindandRateBookstore")
-install.packages("Rtools")
+#install.packages("FindandRateBookstore")
+#install.packages("Rtools")
 
 devtools::install_github("Programming-The-Next-Step-2023/FindandRateBookstore")
 
@@ -18,36 +18,30 @@ library(shinytest)
 library(shiny)
 library(leaflet)
 
-#test_check("FindandRateBookstore")
-
-# Define a test case for map zoom
 
 
-test_that("Map zooms in correctly", {
-  #start a new app session
-  app <- ShinyDriver$new(testthat::test_path("startApp.R"), loadTimeout = 100000)
+test_that("zoom_to_location sets the correct view", {
 
-  # Set the latitude and longitude inputs
-  app$setInputs(latitude = "52.0", longitude = "5.0", wait = FALSE, val = FALSE)
+  mock_leafletProxy <- leaflet() %>%
+    setView(lng = 0, lat = 0, zoom = 0)
 
-  # Click the "Update Map" button
-  app$click("updateMap")
+  # initial state of the map
+  output <- list(map_netherlands = mock_leafletProxy)
+  input <- list()
 
-  # Get the current map state
-  map_state <- app$getMapState("map_netherlands")
+  # Call the zoom_to_location function
+  zoom_to_location("anne_frank", input, output)
 
+  # resulting state of the map
+  result_state <- mock_leafletProxy$getProxyData()
 
-# Check if the map zoom level is correct
-  expect_equal(map_state$zoom, 14)
-
-  # Close the Shiny app session
-  app$stop()
+  # Check that the view has been set correctly
+  expect_equal(result_state$view$lng, 4.8839, tolerance = 0.0001)
+  expect_equal(result_state$view$lat, 52.3752, tolerance = 0.0001)
+  expect_equal(result_state$view$zoom, 17)
 })
 
-
-
 test_check("FindandRateBookstore")
-
 
 
 
