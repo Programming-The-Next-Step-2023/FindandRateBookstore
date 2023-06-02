@@ -33,11 +33,7 @@ ui <- fluidPage(
 
   titlePanel(
     tags$div(
-      #tags$img(system.file("www", "6920933.png", package = "FindandRateBookstore"),
-       #        height = "150px", width = "150px"),
-      tags$span(style = "margin-left: 20px;"),
-      "Find a Bookstore"
-    ) #adding a title
+
   ),
   sidebarLayout(
     position = "right",
@@ -170,6 +166,7 @@ server <- function(input, output) {
   output$map_description <- renderText({
     "Add your longitude and latitude to the right, and this map will show you your location."
   })
+
 }
 
 # Run the app
@@ -190,10 +187,11 @@ server <- function(input, output) {
 #' they give you information about the name of the bookstore, the online rating and the address
 #' you can also use buttons underneath that to locate popular Amsterdam location without needing their coordinates
 
+
 startApp <- function(){
   shinyApp(ui= ui, server= server) }
 
 
 
 
-
+list.files("www")
