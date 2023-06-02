@@ -9,6 +9,7 @@
 #install.packages("shinyWidgets")
 
 install.packages("rmarkdown")
+install.packages("FindandRateBookstore")
 
 library(leaflet) #for making the interactive map
 library(shiny)
@@ -21,90 +22,98 @@ library(shinytest)
 library(FindandRateBookstore)
 library(shinyWidgets)
 
+#################################################################
 
-devtools::document()
-devtools::install("FindandRateBookstore")
+#################
+library(leaflet)
+library(shiny)
 
-#' @importFrom usethis use_package_doc
-#' @export
-run_use_package_doc <- function() {
-  usethis::use_package_doc(override = TRUE, includeFiles = TRUE)
-}
-
-
-#add all the things i want to instal to the discription file
-##the user interface
-
+# UI
 ui <- fluidPage(
-  #set the backgroundcolour of the shiny app page
   setBackgroundColor(
     color = "#d9f0c1",
     gradient = c("linear", "radial"),
     direction = c("bottom", "top", "right", "left"),
     shinydashboard = FALSE
   ),
-  #add a title
+
   titlePanel(
     tags$div(
-    # Use the img tag to add the image
-      tags$img(src = system.file("R/images/Picture5.gif", package = "FindandRateBookstore"),
-               height = "150px", width = "150px"),
-    # Add a space between the image and text
-    tags$span(style = "margin-left: 20px;"),
-    # Add the text
-    "Find and Rate a Bookstore"),
+      #tags$img(system.file("www", "6920933.png", package = "FindandRateBookstore"),
+       #        height = "150px", width = "150px"),
+      tags$span(style = "margin-left: 20px;"),
+      "Find and Rate a Bookstore"
+    )
   ),
-  #add a side bar
   sidebarLayout(
     position = "right",
-    #panel on the right that allows for latitude and longitude input
     sidebarPanel(
+      style = "background-color: #FFFFCC ;",
       h1("Where are you right now?"),
       textInput("latitude", "Latitude:"),
       helpText("Enter the latitude of your location."),
       textInput("longitude", "Longitude:"),
       helpText("Enter the longitude of your location."),
-      actionButton("updateMap", "Update Map")
-      ),
-    #main panel on the left that depicts a map
+      actionButton("updateMap", "Update Map"),
+      br(),
+      h3("Zoom to Locations:"),
+      actionButton("button_anne_frank", "Anne Frank House"),
+      actionButton("button_van_gogh", "Van Gogh Museum"),
+      actionButton("button_rijksmuseum", "Rijksmuseum"),
+      actionButton("button_vondelpark", "Vondelpark"),
+      actionButton("button_dam_square", "Dam Square"),
+      actionButton("button_schiphol_airport", "Schiphol Airport"),
+      actionButton("button_centraal_station", "Centraal Station")
+    ),
     mainPanel(
       h1("Map"),
       leafletOutput("map_netherlands"),
-      br(), # Add a line break
-      textOutput("map_description") # Display text below the map
+      br(),
+      textOutput("map_description"),
+      br()
     )
-
   )
 )
 
 
 
-###### delete this documentation
-
-##the server
-#fist I want there to be a map of the Netherlands when the app opens
-
-
-#' create a Map
-#'
-#' @param input latitude and longitude of the location
-#' @param output map zoomed into the location
-#'
-#' @return the map
-#' @export
-#'
-#' @examples
-#' if you pot in latitude: 52.37 and longitude: 4.89 then it will zoom into Amsterdam
-
-
+# Server
 server <- function(input, output) {
+  greenIcon <- makeIcon(
+    iconUrl = "https://leafletjs.com/examples/custom-icons/leaf-green.png",
+    iconWidth = 38, iconHeight = 95,
+    iconAnchorX = 22, iconAnchorY = 94,
+    shadowUrl = "https://leafletjs.com/examples/custom-icons/leaf-shadow.png",
+    shadowWidth = 50, shadowHeight = 64,
+    shadowAnchorX = 4, shadowAnchorY = 62
+  )
+
+  redIcon <- makeIcon(
+    iconUrl = "https://leafletjs.com/examples/custom-icons/leaf-red.png",
+    iconWidth = 38, iconHeight = 95,
+    iconAnchorX = 22, iconAnchorY = 94,
+    shadowUrl = "https://leafletjs.com/examples/custom-icons/leaf-shadow.png",
+    shadowWidth = 50, shadowHeight = 64,
+    shadowAnchorX = 4, shadowAnchorY = 62
+  )
+
   output$map_netherlands <- renderLeaflet({
     leaflet() %>%
       addTiles() %>%
       setView(lng = 5.2913, lat = 52.1326, zoom = 7)
   })
-#then the user can type in their location using Latitude and Longitude
-  #the map then zooms in closer to their location on the map
+
+  markers_df <- read.csv("inst/www/bookstores1234.csv")
+
+  button_markers_df <- data.frame(
+    location = c("anne_frank", "van_gogh", "rijksmuseum", "vondelpark", "dam_square",
+                 "schiphol_airport", "centraal_station"),  # Additional location names
+    lng = c(4.8839, 4.8812, 4.8852, 4.8684, 4.8922, 4.7634, 4.9000),  # Additional longitudes
+    lat = c(52.3752, 52.3584, 52.3600, 52.3580, 52.3731, 52.3091, 52.3792),  # Additional latitudes
+    name = c("Anne Frank House", "Van Gogh Museum", "Rijksmuseum", "Vondelpark", "Dam Square",
+             "Schiphol Airport", "Centraal Station")  # Additional names
+  )
+
   observeEvent(input$updateMap, {
     lat <- as.numeric(input$latitude)
     lng <- as.numeric(input$longitude)
@@ -112,21 +121,85 @@ server <- function(input, output) {
     if (!is.na(lat) && !is.na(lng)) {
       leafletProxy("map_netherlands") %>%
         clearMarkers() %>%
-        addMarkers(lng = lng, lat = lat, label = "Your Location") %>%
-        setView(lng = lng, lat = lat, zoom = 14)
+        addMarkers(lng = lng, lat = lat, label = "Your Location", icon = redIcon) %>%
+        setView(lng = lng, lat = lat, zoom = 15) %>%
+        addMarkers(
+          data = markers_df,
+          lng = ~lng, lat = ~lat,
+          label = paste("Name: ", markers_df$name,
+                        "Rating: ", markers_df$rating,
+                        "Address: ", markers_df$formatted_address),
+          icon = greenIcon
+        )
     }
-
   })
-  #add the text for under the map
-    output$map_description <- renderText({
-      "Add you longitude and latitude to the right and this map will show you your location"
-      })
+
+  zoom_to_location <- function(location) {
+    lat <- button_markers_df$lat[button_markers_df$location == location]
+    lng <- button_markers_df$lng[button_markers_df$location == location]
+    zoom <- 17
+
+    if (!is.na(lat) && !is.na(lng)) {
+      leafletProxy("map_netherlands") %>%
+        setView(lng = lng, lat = lat, zoom = zoom)
+    }
+  }
+
+  observeEvent(input$button_anne_frank, {
+    zoom_to_location("anne_frank")
+  })
+
+  observeEvent(input$button_van_gogh, {
+    zoom_to_location("van_gogh")
+  })
+
+  observeEvent(input$button_rijksmuseum, {
+    zoom_to_location("rijksmuseum")
+  })
+
+  observeEvent(input$button_vondelpark, {
+    zoom_to_location("vondelpark")
+  })
+
+  observeEvent(input$button_dam_square, {
+    zoom_to_location("dam_square")
+  })
+
+  observeEvent(input$button_schiphol_airport, {
+    zoom_to_location("schiphol_airport")
+  })
+
+  observeEvent(input$button_centraal_station, {
+    zoom_to_location("centraal_station")
+  })
+
+  output$map_description <- renderText({
+    "Add your longitude and latitude to the right, and this map will show you your location."
+  })
 }
 
+# Run the app
+#shinyApp(ui = ui, server = server)
 
-#add documentation to this function
-#this is the function that will run the app
+
+
+#' Ruin the Find Bookstore app
+#'
+#' @return this open the app that can then be used in some parts of the Netherlands to find a close-by bookstore
+#' @export
+#'
+#' @examples
+#' you can type in your latitude and longitude in the right panel
+#' then the app will zoom into your location
+#' a red leaf marker will appear at your location
+#' from there green markers on the map will display the bookstores
+#' they give you information about the name of the bookstore, the online rating and the address
+#' you can also use buttons underneath that to locate popular Amsterdam location without needing their coordinates
+
 startApp <- function(){
-shinyApp(ui= ui, server= server) }
+  shinyApp(ui= ui, server= server) }
+
+
+
 
 
