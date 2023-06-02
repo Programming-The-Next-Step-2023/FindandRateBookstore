@@ -69,6 +69,20 @@ ui <- fluidPage(
 
 # Server
 server <- function(input, output) {
+  #' Import
+  #' shiny
+  #' leaflet
+  #' maps
+  #' rlang
+  #'  usethis
+  #'  devtools
+  #'  testthat
+  #'  shinytest
+  #'  shinyWidgets
+
+
+
+
   greenIcon <- makeIcon(
     iconUrl = "https://leafletjs.com/examples/custom-icons/leaf-green.png",
     iconWidth = 38, iconHeight = 95,
